@@ -1,9 +1,78 @@
-import 'dart:async';
+import 'package:epilappsy_web/homepage.dart';
+import 'package:epilappsy_web/login.dart';
+import 'package:epilappsy_web/utils/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-class Splash extends StatefulWidget {
+class Splash extends StatelessWidget {
+  const Splash({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: [0, 0.5],
+          colors: [
+            Theme.of(context).primaryColorLight,
+            Colors.white,
+          ],
+        ),
+      ),
+      child: StreamBuilder(
+        stream: Database.userState,
+        builder: (BuildContext context, AsyncSnapshot<User> snap) {
+          if (snap.hasError || snap.connectionState != ConnectionState.active) {
+            return SplashScreen();
+          } else {
+            if (snap.data != null)
+              return HomePage();
+            else
+              return Login();
+          }
+        },
+      ),
+    );
+  }
+}
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: [0, 0.5],
+          colors: [
+            Theme.of(context).primaryColorLight,
+            Colors.white,
+          ],
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: Text(
+            "EPILAPPSY",
+            style: TextStyle(
+              fontSize: 72,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColorDark,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/*class Splash extends StatefulWidget {
   const Splash({Key key}) : super(key: key);
 
   @override
@@ -16,7 +85,7 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    //initializeUser();
+    initializeUser();
   }
 
   Future initializeUser() async {
@@ -44,4 +113,4 @@ class _SplashState extends State<Splash> {
       ),
     );
   }
-}
+}*/
