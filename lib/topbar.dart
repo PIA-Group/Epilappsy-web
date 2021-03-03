@@ -28,10 +28,17 @@ class _TopBarState extends State<TopBar> {
                 return Container();
             }),
         SizedBox(width: 16),
-        IconButton(
-          icon: Icon(Icons.exit_to_app),
-          color: Colors.grey,
-          onPressed: Database.signOut,
+        SizedBox(
+          height: 40,
+          width: 40,
+          child: InkWell(
+            onTap: Database.signOut,
+            borderRadius: BorderRadius.circular(40),
+            child: Icon(
+              Icons.exit_to_app,
+              color: Colors.grey,
+            ),
+          ),
         ),
       ],
     );

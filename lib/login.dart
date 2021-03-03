@@ -33,7 +33,8 @@ class _LoginState extends State<Login> {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Container(
-          width: 300,
+          constraints: BoxConstraints(maxWidth: 400),
+          width: double.infinity,
           padding: EdgeInsets.all(0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -114,6 +115,7 @@ class _LoginState extends State<Login> {
             alignment: Alignment.center,
             padding: EdgeInsets.all(12),
             width: double.infinity,
+            height: 48,
             child: _isLoging
                 ? SizedBox(
                     width: 22,

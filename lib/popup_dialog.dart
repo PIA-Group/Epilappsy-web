@@ -25,14 +25,14 @@ class PopupDialog extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  SizedBox(width: 48),
+                  SizedBox(width: 40),
                   Expanded(child: Center(child: this.title) ?? Container()),
                   SizedBox(
-                    height: 48,
-                    width: 48,
+                    height: 40,
+                    width: 40,
                     child: InkWell(
                       onTap: () => Navigator.of(context).pop(),
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(40),
                       child: Icon(
                         Icons.close,
                         color: Theme.of(context).primaryColor,

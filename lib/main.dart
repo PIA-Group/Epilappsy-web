@@ -1,16 +1,8 @@
 import 'dart:html';
 
-import 'package:epilappsy_web/homepage.dart';
-import 'package:epilappsy_web/login.dart';
 import 'package:epilappsy_web/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-
-final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder>{
-  "/login": (BuildContext context) => Login(),
-  "/homepage": (BuildContext context) => HomePage(),
-};
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +33,6 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: Splash(),
-      routes: _routes,
     );
   }
 }
