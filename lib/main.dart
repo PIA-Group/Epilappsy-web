@@ -1,6 +1,7 @@
 import 'package:epilappsy_web/homepage.dart';
 import 'package:epilappsy_web/login.dart';
 import 'package:epilappsy_web/splash.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder>{
@@ -8,7 +9,9 @@ final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder>{
   "/homepage": (BuildContext context) => HomePage(),
 };
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
