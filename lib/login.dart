@@ -1,3 +1,4 @@
+import 'package:epilappsy_web/ui/my_text_form_field.dart';
 import 'package:epilappsy_web/utils/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,28 +57,21 @@ class _LoginState extends State<Login> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextFormField(
+                      MyTextFormField(
                         controller: _emailController,
-                        decoration: InputDecoration(
-                          hintText: "E-mail",
-                        ),
+                        hintText: "E-mail",
                         validator: _emailValidator,
-                        inputFormatters: [
-                          new LengthLimitingTextInputFormatter(64),
-                        ],
+                        limit: 64,
                       ),
-                      TextFormField(
+                      SizedBox(height: 8),
+                      MyTextFormField(
                         controller: _passwordController,
-                        decoration: InputDecoration(
-                          hintText: "Password",
-                          suffixIcon: _obscureIcon(),
-                        ),
-                        obscureText: _obscurePassword,
+                        hintText: "Password",
                         validator: _passwordValidator,
-                        inputFormatters: [
-                          new LengthLimitingTextInputFormatter(64),
-                        ],
-                      )
+                        suffixIcon: _obscureIcon(),
+                        obscure: _obscurePassword,
+                        limit: 32,
+                      ),
                     ],
                   ),
                 ),

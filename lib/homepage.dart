@@ -1,5 +1,5 @@
-import 'package:epilappsy_web/surveys/surveys_list.dart';
-import 'package:epilappsy_web/topbar.dart';
+import 'package:epilappsy_web/surveys/surveys_list/surveys_list.dart';
+import 'package:epilappsy_web/ui/topbar.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {

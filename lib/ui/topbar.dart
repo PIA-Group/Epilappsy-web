@@ -1,3 +1,4 @@
+import 'package:epilappsy_web/ui/my_icon_button.dart';
 import 'package:epilappsy_web/utils/database.dart';
 import 'package:flutter/material.dart';
 
@@ -28,17 +29,12 @@ class _TopBarState extends State<TopBar> {
                 return Container();
             }),
         SizedBox(width: 16),
-        SizedBox(
-          height: 40,
-          width: 40,
-          child: InkWell(
-            onTap: Database.signOut,
-            borderRadius: BorderRadius.circular(40),
-            child: Icon(
-              Icons.exit_to_app,
-              color: Colors.grey,
-            ),
+        MyIconButton(
+          icon: Icon(
+            Icons.exit_to_app,
+            color: Colors.grey,
           ),
+          onPressed: Database.signOut,
         ),
       ],
     );
