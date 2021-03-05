@@ -42,11 +42,15 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(
+                  vertical: 24,
+                  horizontal: 8,
+                ),
                 child: Text(
                   "EPILAPPSY",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: 20,
                   ),
                 ),
               ),
@@ -118,7 +122,12 @@ class _LoginState extends State<Login> {
                       valueColor: AlwaysStoppedAnimation(Colors.white),
                     ),
                   )
-                : Text("Login"),
+                : Text(
+                    "Login",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
           ),
           onPressed: _login,
         ),
