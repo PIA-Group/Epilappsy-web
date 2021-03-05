@@ -1,13 +1,18 @@
 import 'package:epilappsy_web/data/question.dart';
+import 'package:epilappsy_web/data/survey.dart';
 import 'package:flutter/material.dart';
 
 class SurveyQuestions {
   String id;
   Map<String, Question> _questions;
   List<String> order;
+  Survey parent;
 
   SurveyQuestions(
-      {@required this.id, @required questions, @required this.order}) {
+      {@required this.id,
+      @required questions,
+      @required this.order,
+      this.parent}) {
     _questions = questions;
   }
 

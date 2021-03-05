@@ -38,7 +38,11 @@ class _SurveyEditorState extends State<SurveyEditor> {
 
   @override
   void dispose() {
-    Database.updateQuestions(widget.survey);
+    if (widget.survey.questions.isEmpty) {
+      Database.deleteSurvey(widget.survey.id);
+    } else {
+      Database.updateQuestions(widget.survey);
+    }
     super.dispose();
   }
 

@@ -20,6 +20,7 @@ class SurveysList extends StatefulWidget {
     final SurveyQuestions surveyQuestions = SurveyQuestions(
         id: survey.id,
         questions: await Database.getSurveyQuestions(survey.id),
+        parent: survey,
         order: survey.order);
     showDialog(
       context: context,
