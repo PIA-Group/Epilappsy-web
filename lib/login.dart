@@ -1,7 +1,7 @@
+import 'package:epilappsy_web/ui/my_icon_button.dart';
 import 'package:epilappsy_web/ui/my_text_form_field.dart';
 import 'package:epilappsy_web/utils/database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class Login extends StatefulWidget {
   const Login({Key key}) : super(key: key);
@@ -66,6 +66,7 @@ class _LoginState extends State<Login> {
                         hintText: "E-mail",
                         validator: _emailValidator,
                         limit: 64,
+                        onFieldSubmitted: (_) => _login(),
                       ),
                       SizedBox(height: 8),
                       MyTextFormField(
@@ -75,6 +76,7 @@ class _LoginState extends State<Login> {
                         suffixIcon: _obscureIcon(),
                         obscure: _obscurePassword,
                         limit: 32,
+                        onFieldSubmitted: (_) => _login(),
                       ),
                     ],
                   ),
@@ -89,7 +91,7 @@ class _LoginState extends State<Login> {
         ),
       );
 
-  Widget _obscureIcon() => IconButton(
+  Widget _obscureIcon() => MyIconButton(
         icon: Icon(
           // Based on passwordVisible state choose the icon
           _obscurePassword ? Icons.visibility : Icons.visibility_off,

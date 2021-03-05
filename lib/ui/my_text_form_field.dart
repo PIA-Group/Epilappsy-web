@@ -30,6 +30,15 @@ class MyTextFormField extends StatelessWidget {
             vertical: 4,
             horizontal: 16,
           ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 2,
+              color: Colors.red[300],
+            ),
+            borderRadius: const BorderRadius.all(
+              const Radius.circular(20.0),
+            ),
+          ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               width: 2,
