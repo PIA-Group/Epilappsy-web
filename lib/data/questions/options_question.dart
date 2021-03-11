@@ -3,15 +3,24 @@ part of '../question.dart';
 class OptionsQuestion extends Question {
   List<String> options = [];
 
-  OptionsQuestion(
-      {@required id,
-      @required String text,
-      @required String type,
-      this.options})
-      : super(id: id, text: text, type: type);
+  OptionsQuestion({
+    @required id,
+    @required String text,
+    @required String type,
+    List<dynamic> options,
+    Map<String, dynamic> visible,
+    String tag,
+  }) : super(
+          id: id,
+          text: text,
+          type: type,
+          visible: visible,
+          tag: tag,
+        ) {
+    this.options = List<String>.from(options ?? []);
+  }
 
   void addOption(String option) {
-    print(option);
     options.add(option);
   }
 
@@ -23,5 +32,7 @@ class OptionsQuestion extends Question {
         "text": text,
         "type": type,
         "options": options,
+        "visible": visible.isNotEmpty ? visible : null,
+        "tag": tag,
       };
 }

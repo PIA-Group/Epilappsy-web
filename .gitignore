@@ -42,3 +42,6 @@ app.*.map.json
 
 # Firebase web config
 web/firebase_config.js
+
+# Firebase cache
+.firebase/

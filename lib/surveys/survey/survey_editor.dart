@@ -5,6 +5,7 @@ import 'package:epilappsy_web/ui/my_icon_button.dart';
 import 'package:epilappsy_web/utils/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'dart:math' as math;
 
 part 'question_divider.dart';
 part 'question_type_selector.dart';
@@ -23,15 +24,18 @@ class _SurveyEditorState extends State<SurveyEditor> {
   QuestionTypeSelector _questionTypeSelector;
 
   final Map<String, QuestionEditor> _questionEditors = {};
+  List<Question> _questions;
 
   @override
   void initState() {
     super.initState();
+    _questions = widget.survey.questions;
     _questionTypeSelector = QuestionTypeSelector(_newQuestion);
     widget.survey.questions.forEach(
       (Question question) => _questionEditors[question.id] = QuestionEditor(
         question,
         key: GlobalKey(),
+        questions: _questions,
       ),
     );
   }
@@ -48,6 +52,7 @@ class _SurveyEditorState extends State<SurveyEditor> {
 
   @override
   Widget build(BuildContext context) {
+    _questions = widget.survey.questions;
     return Column(
       children: [
         Padding(
@@ -95,7 +100,10 @@ class _SurveyEditorState extends State<SurveyEditor> {
     );
   }
 
-  Future<void> _newQuestion(String type) async {
+  Future<void> _newQuestion(
+    String type,
+    List<Question> questions,
+  ) async {
     final int index = _currentIndex;
     final Question question =
         await Database.newQuestion(widget.survey, type: type, index: index);
@@ -104,6 +112,7 @@ class _SurveyEditorState extends State<SurveyEditor> {
       _questionEditors[question.id] = QuestionEditor(
         question,
         key: GlobalKey(),
+        questions: _questions,
       );
       widget.survey.addQuestion(index, question);
     });

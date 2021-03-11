@@ -6,6 +6,11 @@ final Map<String, QuestionType> questionTypes = {
     type: "text",
     icon: Icon(Icons.text_fields),
   ),
+  "number": QuestionType(
+    label: "Number",
+    type: "number",
+    icon: Icon(Icons.filter_1),
+  ),
   "checkbox": QuestionType(
     label: "Checkbox",
     type: "checkbox",
@@ -15,6 +20,14 @@ final Map<String, QuestionType> questionTypes = {
     label: "Radio",
     type: "radio",
     icon: Icon(Icons.radio_button_on),
+  ),
+  "toggle": QuestionType(
+    label: "Toggle",
+    type: "toggle",
+    icon: Transform.rotate(
+      angle: math.pi,
+      child: Icon(Icons.alt_route),
+    ),
   ),
 };
 

@@ -3,31 +3,38 @@ import 'package:flutter/material.dart';
 part 'questions/checkbox_question.dart';
 part 'questions/options_question.dart';
 part 'questions/radio_question.dart';
+part 'questions/toggle_question.dart';
+part 'questions/text_question.dart';
+part 'questions/number_question.dart';
 
-class Question {
+abstract class Question {
   final String id;
   String text;
   String type;
-  GlobalKey key;
+  String tag;
+  Map<String, List<String>> visible;
 
   Question({
     @required this.id,
     @required this.text,
     this.type = "text",
+    Map<String, dynamic> visible,
+    this.tag,
   }) {
-    key = GlobalKey();
+    this.visible = Map<String, List<String>>.from(visible?.map(
+          (key, value) => MapEntry(
+            key,
+            List<String>.from(value),
+          ),
+        ) ??
+        {});
   }
-
-  Question.fromMap(this.id, Map<String, dynamic> data)
-      : assert(data != null),
-        assert(data["text"] != null),
-        assert(data["type"] != null),
-        text = data["text"],
-        type = data["type"];
 
   Map<String, dynamic> toMap() => {
         "text": text,
         "type": type,
+        "visible": visible.isNotEmpty ? visible : null,
+        "tag": tag,
       };
 
   static Question getQuestion(String id, Map<String, dynamic> data) {
@@ -38,8 +45,12 @@ class Question {
         return CheckboxQuestion.fromMap(id, data);
       case "radio":
         return RadioQuestion.fromMap(id, data);
+      case "toggle":
+        return ToggleQuestion.fromMap(id, data);
+      case "number":
+        return NumberQuestion.fromMap(id, data);
       default:
-        return Question.fromMap(id, data);
+        return TextQuestion.fromMap(id, data);
     }
   }
 }

@@ -1,11 +1,15 @@
 import 'package:epilappsy_web/data/question.dart';
 import 'package:epilappsy_web/surveys/survey/questions/options_editor.dart';
 import 'package:epilappsy_web/surveys/survey/survey_editor.dart';
+import 'package:epilappsy_web/surveys/survey/visibility_editor.dart';
+import 'package:epilappsy_web/ui/my_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class QuestionEditor extends StatefulWidget {
-  const QuestionEditor(this.question, {Key key}) : super(key: key);
+  const QuestionEditor(this.question, {@required this.questions, Key key})
+      : super(key: key);
   final Question question;
+  final List<Question> questions;
 
   @override
   _QuestionEditorState createState() => _QuestionEditorState();
@@ -27,10 +31,10 @@ class _QuestionEditorState extends State<QuestionEditor> {
   @override
   Widget build(BuildContext context) => Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(left: 8),
+          Padding(
+            padding: EdgeInsets.only(left: 8),
             child: Text(
               questionTypes[widget.question.type].label,
               style: TextStyle(
@@ -70,7 +74,17 @@ class _QuestionEditorState extends State<QuestionEditor> {
             focusNode: _focusNode,
             style: TextStyle(fontSize: 18),
           ),
-          _getQuestionEditor(),
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 600,
+            ),
+            child: _getQuestionEditor(),
+          ),
+          SizedBox(height: 4),
+          VisibilityEditor(
+            question: widget.question,
+            questions: widget.questions,
+          ),
         ],
       );
 
@@ -87,7 +101,12 @@ class _QuestionEditorState extends State<QuestionEditor> {
 
   Widget _getQuestionEditor() {
     if (widget.question is OptionsQuestion)
-      return OptionsEditor(widget.question);
+      return ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 400,
+        ),
+        child: OptionsEditor(widget.question),
+      );
     else
       return Container();
   }

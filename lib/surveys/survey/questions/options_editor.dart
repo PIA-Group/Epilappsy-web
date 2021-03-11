@@ -77,63 +77,54 @@ class _OptionsEditorState extends State<OptionsEditor> {
         focusNode: focusNode,
       ),
     );
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 8, top: 16, bottom: 8),
-            child: Text(
-              "Options:",
-              style: TextStyle(
-                color: Colors.black54,
-              ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 8, top: 16, bottom: 8),
+          child: Text(
+            "Options:",
+            style: TextStyle(
+              color: Colors.black54,
             ),
           ),
-          ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 400),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: List<Widget>.from(
-                _options.map(
-                  (Map<String, dynamic> option) {
-                    final TextEditingController controller =
-                        option["controller"];
-                    final FocusNode focusNode = option["focus"];
-                    return Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: MyTextFormField(
-                                  controller: controller,
-                                  focusNode: focusNode,
-                                  hintText: "Write an option"),
-                            ),
-                            SizedBox(width: 8),
-                            MyIconButton(
-                              icon: Icon(
-                                Icons.close,
-                                color: Colors.red[300],
-                                size: 20,
-                              ),
-                              onPressed: () => _deleteOption(option),
-                              size: 32,
-                            ),
-                          ],
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: List<Widget>.from(
+            _options.map(
+              (Map<String, dynamic> option) {
+                final TextEditingController controller = option["controller"];
+                final FocusNode focusNode = option["focus"];
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: MyTextFormField(
+                            controller: controller,
+                            focusNode: focusNode,
+                            hintText: "Write an option"),
+                      ),
+                      SizedBox(width: 8),
+                      MyIconButton(
+                        icon: Icon(
+                          Icons.close,
+                          color: Colors.red[300],
+                          size: 20,
                         ),
-                        SizedBox(height: 4),
-                      ],
-                    );
-                  },
-                ),
-              )..add(newOption),
+                        onPressed: () => _deleteOption(option),
+                        size: 32,
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          ),
-        ],
-      ),
+          )..add(newOption),
+        ),
+      ],
     );
   }
 
