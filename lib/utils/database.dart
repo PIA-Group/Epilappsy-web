@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:epilappsy_web/data/patient.dart';
 import 'package:epilappsy_web/data/question.dart';
 import 'package:epilappsy_web/data/survey.dart';
 import 'package:epilappsy_web/data/survey_questions.dart';
@@ -23,12 +24,11 @@ class Database {
 
   static Future<void> signOut() async => await FirebaseAuth.instance.signOut();
 
-  static Future<String> getName() async => ((await FirebaseFirestore.instance
-              .collection("doctors")
-              .doc(userID)
-              .get())
-          ?.data() ??
-      {})["name"];
+  static DocumentReference get _doctorRef =>
+      FirebaseFirestore.instance.collection("doctors").doc(userID);
+
+  static Future<String> getName() async =>
+      ((await _doctorRef.get())?.data() ?? {})["name"];
 
   static Stream<User> get userState async* {
     await for (User user in FirebaseAuth.instance.authStateChanges()) {
@@ -141,4 +141,32 @@ class Database {
       print(error);
     });
   }
+
+  static Stream<List<Patient>> getPatients() async* {
+    await for (DocumentSnapshot doc in _doctorRef.snapshots()) {
+      List<String> patientsID = List<String>.from(doc.data()["patients"] ?? []);
+      List<Patient> patients = [];
+
+      for (String patientID in patientsID) {
+        patients.add(await getPatient(patientID));
+      }
+
+      yield patients;
+    }
+  }
+
+  static Future<Patient> getPatient(String patientID) async => Patient.fromMap(
+      patientID,
+      (await FirebaseFirestore.instance
+              .collection("patients")
+              .doc(patientID)
+              .get())
+          .data());
+
+  static Future<void> updateDefaultSurvey(
+          String patientID, String surveyID) async =>
+      await FirebaseFirestore.instance
+          .collection("patients")
+          .doc(patientID)
+          .update({"default survey": surveyID});
 }

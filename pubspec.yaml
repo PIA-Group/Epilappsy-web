@@ -16,7 +16,7 @@ dependencies:
   cloud_firestore: ^0.16.0+1
   firebase_auth: ^0.20.1
   firebase_auth_web: ^0.3.3
-  provider: ^5.0.0
+  buttons_tabbar: ^1.1.2
 
 
 dev_dependencies:

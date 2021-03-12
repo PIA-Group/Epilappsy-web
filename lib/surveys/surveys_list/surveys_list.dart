@@ -11,7 +11,8 @@ import 'package:flutter/rendering.dart';
 part 'survey_list_item.dart';
 
 class SurveysList extends StatefulWidget {
-  const SurveysList({Key key}) : super(key: key);
+  const SurveysList(this.surveys, {Key key}) : super(key: key);
+  final List<Survey> surveys;
 
   @override
   _SurveysListState createState() => _SurveysListState();
@@ -48,7 +49,7 @@ class _SurveysListState extends State<SurveysList> {
           child: Row(
             children: [
               Text(
-                "My Surveys:",
+                "Create a new survey",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -69,17 +70,10 @@ class _SurveysListState extends State<SurveysList> {
     );
   }
 
-  Widget _buildList() => StreamBuilder(
-        stream: Database.mySurveys(),
-        builder: (context, AsyncSnapshot<List<Survey>> snap) =>
-            snap.connectionState != ConnectionState.active
-                ? Container()
-                : ListView.separated(
-                    separatorBuilder: (context, index) => Divider(),
-                    itemCount: snap.data.length,
-                    itemBuilder: (context, index) =>
-                        SurveyListItem(snap.data[index]),
-                  ),
+  Widget _buildList() => ListView.separated(
+        separatorBuilder: (context, index) => Divider(),
+        itemCount: widget.surveys.length,
+        itemBuilder: (context, index) => SurveyListItem(widget.surveys[index]),
       );
 
   Future<void> _newSurvey() async =>
