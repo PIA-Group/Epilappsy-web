@@ -40,13 +40,18 @@ class _PatientItemState extends State<PatientItem> {
       },
       child: Container(
         color: hover ? defaultColor : backgroundColor,
-        child: ListTile(
-          leading: Icon(Icons.person),
-          title: Text(widget.patient.name),
-          trailing: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 400),
-            child: widget.surveys.isEmpty ? Container() : _buildDropDown(),
-          ),
+        child: Row(
+          children: [
+            Expanded(
+              child: ListTile(
+                leading: Icon(Icons.person),
+                title: Text(widget.patient.name),
+              ),
+            ),
+            Expanded(
+              child: widget.surveys.isEmpty ? Container() : _buildDropDown(),
+            ),
+          ],
         ),
       ),
     );
