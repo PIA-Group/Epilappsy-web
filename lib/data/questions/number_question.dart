@@ -5,7 +5,7 @@ class NumberQuestion extends Question {
       : super(
           id: id,
           text: data["text"],
-          type: "text",
+          type: "number",
           visible: data["visible"],
           tag: data["tag"],
         );
