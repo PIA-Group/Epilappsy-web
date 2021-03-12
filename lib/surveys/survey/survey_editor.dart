@@ -24,18 +24,16 @@ class _SurveyEditorState extends State<SurveyEditor> {
   QuestionTypeSelector _questionTypeSelector;
 
   final Map<String, QuestionEditor> _questionEditors = {};
-  List<Question> _questions;
 
   @override
   void initState() {
     super.initState();
-    _questions = widget.survey.questions;
     _questionTypeSelector = QuestionTypeSelector(_newQuestion);
     widget.survey.questions.forEach(
       (Question question) => _questionEditors[question.id] = QuestionEditor(
         question,
         key: GlobalKey(),
-        questions: _questions,
+        questions: widget.survey,
       ),
     );
   }
@@ -52,7 +50,6 @@ class _SurveyEditorState extends State<SurveyEditor> {
 
   @override
   Widget build(BuildContext context) {
-    _questions = widget.survey.questions;
     return Column(
       children: [
         Padding(
@@ -102,7 +99,6 @@ class _SurveyEditorState extends State<SurveyEditor> {
 
   Future<void> _newQuestion(
     String type,
-    List<Question> questions,
   ) async {
     final int index = _currentIndex;
     final Question question =
@@ -112,7 +108,7 @@ class _SurveyEditorState extends State<SurveyEditor> {
       _questionEditors[question.id] = QuestionEditor(
         question,
         key: GlobalKey(),
-        questions: _questions,
+        questions: widget.survey,
       );
       widget.survey.addQuestion(index, question);
     });

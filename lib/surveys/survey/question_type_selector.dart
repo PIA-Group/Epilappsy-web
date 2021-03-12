@@ -68,9 +68,7 @@ class QuestionTypeSelector extends StatelessWidget {
                       child: TextButton(
                         style: TextButton.styleFrom(
                             backgroundColor: backgroundColor),
-                        onPressed: () {
-                          newQuestion(questionType.type);
-                        },
+                        onPressed: () => newQuestion(questionType.type),
                         child: SingleChildScrollView(
                           physics: NeverScrollableScrollPhysics(),
                           child: SizedBox(

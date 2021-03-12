@@ -7,31 +7,39 @@ part 'questions/toggle_question.dart';
 part 'questions/text_question.dart';
 part 'questions/number_question.dart';
 
-abstract class Question {
+abstract class Question extends ChangeNotifier {
   final String id;
-  String text;
+  String _text;
   String type;
   String tag;
   Map<String, List<String>> visible;
 
   Question({
     @required this.id,
-    @required this.text,
+    @required text,
     this.type = "text",
     Map<String, dynamic> visible,
     this.tag,
   }) {
+    this._text = text;
     this.visible = Map<String, List<String>>.from(visible?.map(
           (key, value) => MapEntry(
             key,
             List<String>.from(value),
           ),
         ) ??
-        {});
+        <String, List<String>>{});
+  }
+
+  String get text => _text;
+
+  set text(String value) {
+    _text = value;
+    notifyListeners();
   }
 
   Map<String, dynamic> toMap() => {
-        "text": text,
+        "text": _text,
         "type": type,
         "visible": visible.isNotEmpty ? visible : null,
         "tag": tag,

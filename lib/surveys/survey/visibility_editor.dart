@@ -1,14 +1,15 @@
 import 'package:epilappsy_web/data/question.dart';
+import 'package:epilappsy_web/data/survey_questions.dart';
 import 'package:epilappsy_web/ui/my_icon_button.dart';
 import 'package:epilappsy_web/ui/my_text_form_field.dart';
 import 'package:flutter/material.dart';
 
 class VisibilityEditor extends StatefulWidget {
   const VisibilityEditor(
-      {@required this.question, @required this.questions, Key key})
+      {@required this.question, @required this.survey, Key key})
       : super(key: key);
   final Question question;
-  final List<Question> questions;
+  final SurveyQuestions survey;
 
   @override
   _VisibilityEditorState createState() => _VisibilityEditorState();
@@ -26,8 +27,15 @@ class _VisibilityEditorState extends State<VisibilityEditor> {
   @override
   void initState() {
     super.initState();
-    _setQuestions(widget.questions);
-    questionID = TextEditingController(text: questions?.first?.id);
+    widget.survey.addListener(() {
+      if (mounted)
+        setState(() {
+          _setQuestions();
+        });
+    });
+    _setQuestions();
+    questionID = TextEditingController(
+        text: questions.isNotEmpty ? questions.first.id : "");
     _conditions = List<Map<String, dynamic>>.from(
       widget.question.visible.entries
           .where((MapEntry entry) => questions.contains(entry.key))
@@ -79,167 +87,151 @@ class _VisibilityEditorState extends State<VisibilityEditor> {
     super.dispose();
   }
 
-  @override
-  void didUpdateWidget(covariant VisibilityEditor oldWidget) {
-    if (oldWidget.questions.length != this.questions.length)
-      _setQuestions(this.questions);
-    super.didUpdateWidget(oldWidget);
-  }
-
-  void _setQuestions(List<Question> questions) {
-    this.questions = widget.questions
-        .where((Question question) => question.id != widget.question.id)
-        .toList();
+  void _setQuestions() {
+    this.questions = widget.survey.questions.where((Question question) {
+      question.addListener(() {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+      return question.id != widget.question.id;
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    Form newCondition = Form(
-      key: key,
-      child: Row(
-        children: [
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) => ConstrainedBox(
-                constraints: constraints,
-                child: DropdownButton<String>(
-                  value: questionID.text,
-                  onChanged: (String newQuestionID) {
-                    setState(() {
-                      questionID.text = newQuestionID;
-                    });
-                  },
-                  items: questions
-                      .map<DropdownMenuItem<String>>(
-                        (Question question) => DropdownMenuItem<String>(
-                          value: question.id,
-                          child: SizedBox(
-                            width: constraints.maxWidth - 24,
-                            child: Text(
-                              question.text,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
+    if (this.questions.isEmpty) {
+      questionID.clear();
+      return Container();
+    } else {
+      if (questionID.text.isEmpty && questions.isNotEmpty)
+        questionID.text = this.questions.first.id;
+      return Builder(
+        builder: (context) {
+          Form newCondition = Form(
+            key: key,
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildDropDown(questionID),
                 ),
-              ),
+                SizedBox(width: 8),
+                Expanded(
+                  flex: 2,
+                  child: MyTextFormField(
+                    hintText: "Write a condition",
+                    validator: (String text) {
+                      if (text.trim().isEmpty)
+                        return "Condition can't be empty";
+                      return null;
+                    },
+                    onFieldSubmitted: (String text) {
+                      if (key.currentState.validate()) {
+                        controller.clear();
+                        _newCondition(questionID.text, text.trim());
+                      }
+                    },
+                    controller: controller,
+                    focusNode: focusNode,
+                  ),
+                ),
+              ],
             ),
-          ),
-          SizedBox(width: 8),
-          Expanded(
-            flex: 2,
-            child: MyTextFormField(
-              hintText: "Write a condition",
-              validator: (String text) {
-                if (text.trim().isEmpty) return "Condition can't be empty";
-                return null;
-              },
-              onFieldSubmitted: (String text) {
-                if (key.currentState.validate()) {
-                  controller.clear();
-                  _newCondition(questionID.text, text.trim());
-                }
-              },
-              controller: controller,
-              focusNode: focusNode,
-            ),
-          ),
-        ],
-      ),
-    );
+          );
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            MyIconButton(
-              onPressed: () => setState(() {
-                _visibilityEditor = !_visibilityEditor;
-              }),
-              icon: Icon(
-                Icons.visibility,
-                color: _conditions.isEmpty ? Colors.green : Colors.orange,
-              ),
-            ),
-            SizedBox(width: 4),
-            Text(_conditions.isEmpty ? "Always visible" : "Visible if:")
-          ],
-        ),
-        _visibilityEditor
-            ? Column(
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "Question",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 20),
-                          child: RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: 'Condition: ',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                TextSpan(
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.black.withOpacity(0.7),
-                                  ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text:
-                                            '(multiple conditions separeted by '),
-                                    TextSpan(
-                                      text: 'semicolon ;',
-                                      style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                    ),
-                                    TextSpan(text: ' )'),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 32),
-                    ],
+                  MyIconButton(
+                    onPressed: () => setState(() {
+                      _visibilityEditor = !_visibilityEditor;
+                    }),
+                    icon: Icon(
+                      Icons.visibility,
+                      color: _conditions.isEmpty ? Colors.green : Colors.orange,
+                    ),
                   ),
-                  SizedBox(height: 8),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List<Widget>.from(
-                      _conditions.map(
-                        (Map<String, dynamic> condition) =>
-                            _conditionBuilder(condition),
-                      ),
-                    )..add(newCondition),
-                  ),
+                  SizedBox(width: 4),
+                  Text(_conditions.isEmpty ? "Always visible" : "Visible if:")
                 ],
-              )
-            : Container(),
-      ],
-    );
+              ),
+              _visibilityEditor
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Question",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 20),
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: 'Condition: ',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.black.withOpacity(0.7),
+                                        ),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                              text:
+                                                  '(multiple conditions separeted by '),
+                                          TextSpan(
+                                            text: 'semicolon ;',
+                                            style: TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                          TextSpan(text: ' )'),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 32),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List<Widget>.from(
+                            _conditions.map(
+                              (Map<String, dynamic> condition) =>
+                                  _conditionBuilder(condition),
+                            ),
+                          )..add(newCondition),
+                        ),
+                      ],
+                    )
+                  : Container(),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Widget _conditionBuilder(Map<String, dynamic> condition) {
@@ -249,31 +241,8 @@ class _VisibilityEditorState extends State<VisibilityEditor> {
     return Row(
       children: [
         Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) => ConstrainedBox(
-              constraints: constraints,
-              child: DropdownButton<String>(
-                value: questionID.text,
-                onChanged: (String newQuestionID) {
-                  setState(() {
-                    questionID.text = newQuestionID;
-                  });
-                },
-                items: questions
-                    .map<DropdownMenuItem<String>>(
-                        (Question question) => DropdownMenuItem<String>(
-                              value: question.id,
-                              child: SizedBox(
-                                width: constraints.maxWidth - 24,
-                                child: Text(
-                                  question.text,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ))
-                    .toList(),
-              ),
-            ),
+          child: _buildDropDown(
+            questionID,
           ),
         ),
         SizedBox(width: 4),
@@ -297,6 +266,33 @@ class _VisibilityEditorState extends State<VisibilityEditor> {
       ],
     );
   }
+
+  Widget _buildDropDown(TextEditingController questionID) => LayoutBuilder(
+        builder: (context, constraints) => ConstrainedBox(
+          constraints: constraints,
+          child: DropdownButton<String>(
+            value: questionID.text,
+            onChanged: (String newQuestionID) {
+              setState(() {
+                questionID.text = newQuestionID;
+              });
+            },
+            items: questions
+                .map<DropdownMenuItem<String>>(
+                    (Question question) => DropdownMenuItem<String>(
+                          value: question.id,
+                          child: SizedBox(
+                            width: constraints.maxWidth - 24,
+                            child: Text(
+                              question.text,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ))
+                .toList(),
+          ),
+        ),
+      );
 
   void _deleteOption(Map<String, dynamic> condition) {
     setState(() {

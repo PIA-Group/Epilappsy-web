@@ -1,6 +1,8 @@
 import 'package:epilappsy_web/data/question.dart';
+import 'package:epilappsy_web/data/survey_questions.dart';
 import 'package:epilappsy_web/surveys/survey/questions/options_editor.dart';
 import 'package:epilappsy_web/surveys/survey/survey_editor.dart';
+import 'package:epilappsy_web/surveys/survey/tag_editor.dart';
 import 'package:epilappsy_web/surveys/survey/visibility_editor.dart';
 import 'package:epilappsy_web/ui/my_icon_button.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,7 @@ class QuestionEditor extends StatefulWidget {
   const QuestionEditor(this.question, {@required this.questions, Key key})
       : super(key: key);
   final Question question;
-  final List<Question> questions;
+  final SurveyQuestions questions;
 
   @override
   _QuestionEditorState createState() => _QuestionEditorState();
@@ -29,64 +31,75 @@ class _QuestionEditorState extends State<QuestionEditor> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 8),
-            child: Text(
-              questionTypes[widget.question.type].label,
-              style: TextStyle(
-                fontSize: 17,
-                color: Colors.black54,
-              ),
+  Widget build(BuildContext context) {
+    bool tagShowing = widget.question.tag != null;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: Text(
+            questionTypes[widget.question.type].label,
+            style: TextStyle(
+              fontSize: 17,
+              color: Colors.black54,
             ),
           ),
-          SizedBox(height: 16),
-          TextFormField(
-            decoration: InputDecoration(
-              hintText: "Write a question",
-              contentPadding: EdgeInsets.symmetric(
-                vertical: 4,
-                horizontal: 16,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2,
-                  color: Colors.grey[300],
+        ),
+        SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Write a question",
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 16,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 2,
+                      color: Colors.grey[300],
+                    ),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(20.0),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 2,
+                      color: Theme.of(context).primaryColorLight,
+                    ),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(20.0),
+                    ),
+                  ),
                 ),
-                borderRadius: const BorderRadius.all(
-                  const Radius.circular(20.0),
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2,
-                  color: Theme.of(context).primaryColorLight,
-                ),
-                borderRadius: const BorderRadius.all(
-                  const Radius.circular(20.0),
-                ),
+                controller: _controller,
+                focusNode: _focusNode,
+                style: TextStyle(fontSize: 18),
               ),
             ),
-            controller: _controller,
-            focusNode: _focusNode,
-            style: TextStyle(fontSize: 18),
+            SizedBox(width: 8),
+            TagEditor(widget.question),
+          ],
+        ),
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 600,
           ),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: 600,
-            ),
-            child: _getQuestionEditor(),
-          ),
-          SizedBox(height: 4),
-          VisibilityEditor(
-            question: widget.question,
-            questions: widget.questions,
-          ),
-        ],
-      );
+          child: _getQuestionEditor(),
+        ),
+        SizedBox(height: 4),
+        VisibilityEditor(
+          question: widget.question,
+          survey: widget.questions,
+        ),
+      ],
+    );
+  }
 
   void _updateText() {
     final String text = _controller.text.trim();
