@@ -7,7 +7,6 @@ import 'package:epilappsy_web/surveys/surveys_list/surveys_list.dart';
 import 'package:epilappsy_web/ui/topbar.dart';
 import 'package:epilappsy_web/utils/database.dart';
 import 'package:flutter/material.dart';
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -63,6 +62,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _streamSurveys?.cancel();
+    _streamPatients?.cancel();
     super.dispose();
   }
 

@@ -32,6 +32,10 @@ class _TagEditorState extends State<TagEditor> {
     if (_formKey.currentState.validate()) {
       widget.question.tag = _controller.text.trim();
     }
+    if (_controller.text.trim().isEmpty)
+      setState(() {
+        tagShowing = false;
+      });
   }
 
   @override

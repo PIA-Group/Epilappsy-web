@@ -38,7 +38,8 @@ class _VisibilityEditorState extends State<VisibilityEditor> {
         text: questions.isNotEmpty ? questions.first.id : "");
     _conditions = List<Map<String, dynamic>>.from(
       widget.question.visible.entries
-          .where((MapEntry entry) => questions.contains(entry.key))
+          .where((MapEntry entry) =>
+              questions.any((Question question) => question.id == entry.key))
           .map((MapEntry<String, List<String>> condition) {
         final TextEditingController controller = TextEditingController(
           text: condition.value.join("; "),
